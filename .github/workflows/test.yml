@@ -1,0 +1,51 @@
+# .github/workflows/test.yml
+
+name: Run Tests with uv
+
+# Trigger on pushes to main/master and pull requests targeting them
+on:
+  push:
+    branches: [ main, master ] # Adjust branch names if needed
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    # Run on Ubuntu (latest) for multiple Python versions
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Define the Python versions you want to test against
+        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
+
+    steps:
+    # 1. Check out the repository code
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    # 2. Set up the specific Python version from the matrix
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        # uv manages its own cache, so pip cache might be less relevant here
+        # cache: 'pip'
+
+    # 3. Install uv
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+    # 4. Add uv to PATH for subsequent steps
+    - name: Add uv to PATH
+      run: echo "$HOME/.uv/bin" >> $GITHUB_PATH
+
+    # 5. Install dependencies using uv
+    - name: Install dependencies
+      run: |
+        # Install the package itself in editable mode + any test dependencies
+        uv pip install -e .[test]
+
+    # 6. Run tests using unittest discovery
+    - name: Run tests
+      run: |
+        python -m unittest discover tests # Assumes tests are in the 'tests' directory

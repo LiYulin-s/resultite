@@ -1,0 +1,15 @@
+[project]
+name = "resultite"
+version = "0.1.0"
+description = "Bloat free result type for Python. No dummy classes. Pure types magic."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "Lee Yurin", email = "leeyurin@mail.nwpu.edu.cn" }
+]
+dependencies = []
+
+[project.optional-dependencies]
+test = [
+    "asyncio"
+]
