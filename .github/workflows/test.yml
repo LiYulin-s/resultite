@@ -41,7 +41,7 @@ jobs:
 
     - name: Create a virtual environment
       run: |
-        python -m venv venv
+        uv venv
         source venv/bin/activate
 
     # 5. Install dependencies using uv
