@@ -39,6 +39,11 @@ jobs:
     - name: Add uv to PATH
       run: echo "$HOME/.uv/bin" >> $GITHUB_PATH
 
+    - name: Create a virtual environment
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+
     # 5. Install dependencies using uv
     - name: Install dependencies
       run: |

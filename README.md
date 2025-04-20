@@ -1,4 +1,4 @@
-s# **Resultite**
+# **Resultite**
 **Minimalist Result Type Handling with Pure Python Typing**
 
 Tired of boilerplate classes just to represent success or failure? Looking for Rust-like `Result` expressiveness **without** adopting a whole new type system or custom classes?
