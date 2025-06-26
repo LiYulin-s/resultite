@@ -1,12 +1,16 @@
 # tests/test_core.py
 import asyncio
+from typing import Any
 import unittest
 
 # Import from the resultite package
 # If your project root is in PYTHONPATH, this will work.
 # Otherwise, you might need to adjust PYTHONPATH or install the package (e.g., pip install -e .)
+# New high-level Result class conflicts with union-based alias used here.
+# Import minimalist alias explicitly for static typing.
+from resultite.core import Result as LegacyResult
+
 from resultite import (
-    Result, # For type hinting if needed in tests
     run_catching,
     async_run_catching,
     get_or_throw,
@@ -17,6 +21,7 @@ from resultite import (
     map_result,
     map_result_async,
 )
+from resultite.result import Err, Ok
 
 # Helper functions for testing
 def sync_ok(x: int) -> int:
@@ -115,12 +120,12 @@ class TestResultUtils(unittest.IsolatedAsyncioTestCase):
     # --- Test map_result ---
     def test_map_result_success_success(self):
         # Explicitly type hint the successful input for clarity in test
-        successful_input: Result[int] = 10
+        successful_input = 10  # type: ignore[invalid-type]
         res = map_result(successful_input, lambda x: f"Value: {x}")
         self.assertEqual(res, "Value: 10")
 
     def test_map_result_success_fail(self):
-        successful_input: Result[int] = 10
+        successful_input = 10  # type: ignore[invalid-type]
         res = map_result(successful_input, lambda x: sync_fail(x)) # sync_fail raises for > 0
         self.assertIsInstance(res, ValueError)
         self.assertEqual(str(res), "Input must be non-positive")
@@ -128,26 +133,26 @@ class TestResultUtils(unittest.IsolatedAsyncioTestCase):
     def test_map_result_failure(self):
         err = TypeError("Original error")
         # Explicitly type hint the error input for clarity in test
-        error_input: Result[int] = err
+        error_input = err  # type: ignore[invalid-type]
         res = map_result(error_input, lambda x: f"Value: {x}")
         self.assertIs(res, err) # Should pass the original error through
 
     # --- Test map_result_async ---
     async def test_map_result_async_success_success(self):
-        successful_input: Result[int] = 10
-        res = await map_result_async(successful_input, lambda x: async_ok(x))
+        successful_input = 10  # type: ignore[invalid-type]
+        res = await map_result_async(successful_input, lambda x: async_ok(x))  # type: ignore[arg-type]
         self.assertEqual(res, 20)
 
     async def test_map_result_async_success_fail(self):
-        successful_input: Result[int] = 10
+        successful_input = 10  # type: ignore[invalid-type]
         res = await map_result_async(successful_input, lambda x: async_fail(x)) # async_fail raises for > 0
         self.assertIsInstance(res, ValueError)
         self.assertEqual(str(res), "Input must be non-positive (async)")
 
     async def test_map_result_async_failure(self):
         err = TypeError("Original error")
-        error_input: Result[int] = err
-        res = await map_result_async(error_input, lambda x: async_ok(x))
+        error_input = err  # type: ignore[invalid-type]
+        res = await map_result_async(error_input, lambda x: async_ok(x))  # type: ignore[arg-type]
         self.assertIs(res, err) # Should pass the original error through
 
 if __name__ == "__main__":

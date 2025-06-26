@@ -1,6 +1,6 @@
 # resultite/__init__.py
+# ---- Legacy functional helpers (Union-based) --------------------------------
 from .core import (
-    Result,
     T,
     U,
     run_catching,
@@ -14,8 +14,15 @@ from .core import (
     map_result_async,
 )
 
+# ---- New, richer API -------------------------------------------------------
+from .result import Result, Ok, Err, resultify, async_resultify
+
 __all__ = [
     "Result",
+    "Ok",
+    "Err",
+    "resultify",
+    "async_resultify",
     "T",
     "U",
     "run_catching",
